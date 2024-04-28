@@ -1,12 +1,13 @@
 import MenuItems from "./components/MenuItems"
 import { menuItems } from "./data/db"
-import useOrder from "./hooks/useOrder"
 import OrderContents from './components/OrderContents';
 import OrderTotals from "./components/OrderTotals";
 import TipPercentageForm from "./components/TipPercentageForm";
+import { useReducer } from "react";
+import { initialState, orderReducer } from "./reducers/order-reducer";
 
 function App() {
-  const { addItem,order, removeItem,tip,setTip , placeOrder} = useOrder()
+  const [state, dispatch] = useReducer(orderReducer, initialState)
   return (
     <>
       <header className="bg-teal-400 py-5 ">
@@ -23,7 +24,7 @@ function App() {
               <MenuItems 
                 key={item.id}
                 item={item}
-                addItem={addItem}
+                dispatch={dispatch}
               />
             ))}
 
@@ -31,22 +32,22 @@ function App() {
         
         </div>
         <div className="border border-dashed border-slate-300 p-5 rounded-lg space-y-10">
-          {order.length > 0 ? (
+          {state.order.length > 0 ? (
             <>
               <OrderContents
-                order={order}
-                removeItem={removeItem}
+                order={state.order}
+                dispatch={dispatch}
               />
 
               <TipPercentageForm
-                setTip={setTip}
-                tip={tip}
+                dispatch={dispatch}
+                tip={state.tip}
               />
 
               <OrderTotals
-                order={order}
-                placeOrder={placeOrder}
-                tip={tip}
+                order={state.order}
+                dispatch={dispatch}
+                tip={state.tip}
               />
 
             </>
